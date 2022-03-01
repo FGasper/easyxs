@@ -28,6 +28,13 @@ of a `*.xs` file. Now instead of those 3-4 includes you can just:
 ```
 #include "easyxs/init.h"
 ```
+This includes a fix for the [torrent of warnings that clang 12
+throws](https://github.com/Perl/perl5/issues/18780) in pre-5.36 perls.
+
+# Usage Notes
+
+If you use GitHub Actions or similar, ensure that you
+`git submodule init && git submodule update` as part of your checkout.
 
 # License & Copyright
 
