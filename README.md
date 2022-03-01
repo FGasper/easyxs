@@ -1,4 +1,4 @@
-# XS Easy
+# Easy XS
 
 This library is a toolbox that assists with creation & maintenance
 of Perl XS code.
@@ -9,7 +9,7 @@ of Perl XS code.
 [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
 of your own XS module.
 
-2. Pick which pieces of XS Easy you’d like to include in your code.
+2. Pick which pieces of Easy XS you’d like to include in your code.
 
 # Rationale
 
@@ -26,7 +26,7 @@ and safe (or, at least, safe-_er_!) to write XS code … maybe even *fun!* :-)
 Includes the standard boilerplate code you normally stick at the top
 of a `*.xs` file. Now instead of those 3-4 includes you can just:
 ```
-#include "xseasy/init.h"
+#include "easyxs/init.h"
 ```
 
 # License & Copyright
