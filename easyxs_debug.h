@@ -104,6 +104,7 @@ static inline void S_debug_showstack(pTHX_ const char *pattern, ...)
   I32 floor = cx->blk_oldsp;
   I32 *mark = PL_markstack + cx->blk_oldmarksp + 1;
 
+  PerlIO_printf(Perl_debug_log, "  TOPMARK=%d, floor = %d\n", (int) TOPMARK, (int) floor);
   PerlIO_printf(Perl_debug_log, "  marks (TOPMARK=@%" IVdf "):\n", (IV) (TOPMARK - floor));
   for(; mark <= PL_markstack_ptr; mark++)
     PerlIO_printf(Perl_debug_log,  "    @%" IVdf "\n", (IV) (*mark - floor));
