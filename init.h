@@ -1,3 +1,6 @@
+#ifndef EASYXS_INIT
+#define EASYXS_INIT 1
+
 #define PERL_NO_GET_CONTEXT
 #include "EXTERN.h"
 
@@ -15,3 +18,5 @@
 #undef STMT_END
 #define STMT_START  do
 #define STMT_END    while (0)
+
+#endif
