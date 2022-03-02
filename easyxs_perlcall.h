@@ -55,7 +55,7 @@ static inline SV* _easyxs_call_method_scalar (pTHX_ SV* object, const char* meth
     else {
         ret = SvREFCNT_inc(POPs);
 
-        while (count-- > 1) POPs;
+        while (count-- > 1) PERL_UNUSED_VAR(POPs);
     }
 
     PUTBACK;
