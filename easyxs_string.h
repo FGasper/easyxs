@@ -10,7 +10,7 @@ inline char* _easyxs_sv_to_str (pTHX_ SV* sv, U8 is_utf8) {
 
     size_t len = strnlen(str, 1 + SvCUR(sv));
     if (len != SvCUR(sv)) {
-        croak("Cannot convert scalar to C string (NUL byte detected, offset %zu)", len);
+        croak("Cannot convert scalar to C string (NUL byte detected, offset %" UVf ")", (UV) len);
     }
 
     return str;
