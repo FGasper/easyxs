@@ -3,9 +3,9 @@
 
 #include "init.h"
 
-#define easyxs_debug_showstack(pattern, ...)  S_debug_showstack(aTHX_ pattern, ##__VA_ARGS__)
+/* The following is courtesy of Paul Evans: */
 
-#define easyxs_debug_sv_summary(sv)  S_debug_sv_summary(aTHX_ sv)
+#define exs_debug_sv_summary(sv)  S_debug_sv_summary(aTHX_ sv)
 
 /* ------------------------------------------------------------ */
 
@@ -86,6 +86,10 @@ static inline void S_debug_sv_summary(pTHX_ const SV *sv)
   PerlIO_printf(Perl_debug_log, "}");
 }
 
+#ifdef CX_CUR
+
+#define exs_debug_showstack(pattern, ...)  S_debug_showstack(aTHX_ pattern, ##__VA_ARGS__)
+
 static inline void S_debug_showstack(pTHX_ const char *pattern, ...)
 {
   SV **sp;
@@ -113,11 +117,12 @@ static inline void S_debug_showstack(pTHX_ const char *pattern, ...)
   for(sp = PL_stack_base + floor + 1; sp <= PL_stack_sp; sp++) {
     PerlIO_printf(Perl_debug_log, sp == PL_stack_sp ? "-> " : "   ");
     PerlIO_printf(Perl_debug_log, "%p = ", *sp);
-    easyxs_debug_sv_summary(*sp);
+    S_debug_sv_summary(aTHX_ *sp);
     while(mark <= PL_markstack_ptr && PL_stack_base + *mark == sp)
       PerlIO_printf(Perl_debug_log, " [*M]"), mark++;
     PerlIO_printf(Perl_debug_log, "\n");
   }
 }
+#endif
 
 #endif
