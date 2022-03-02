@@ -38,4 +38,29 @@ static inline void _EASYXS_SET_ARGS (pTHX_ SV* object, SV** args) {
     LEAVE;                                          \
 } STMT_END
 
+static inline SV* _easyxs_call_method_scalar (pTHX_ SV* object, SV** args) {
+    dSP;
+
+    _EASYXS_SET_ARGS(object, args);
+
+    int count = call_method( methname, G_SCALAR );
+
+    SV* ret;
+
+    if (count == 0) {
+        ret = &PL_sv_undef;
+    }
+    else {
+        ret = SvREFCNT_inc(POPs);
+    }
+
+    FREETMPS;
+    LEAVE;
+
+    return ret;
+}
+
+#define exs_call_method_scalar(object, methname, args) \
+    _easyxs_call_method_scalar(aTHX_ object, methname, args)
+
 #endif
