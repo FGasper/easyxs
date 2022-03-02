@@ -53,7 +53,7 @@ static inline void S_debug_sv_summary(pTHX_ const SV *sv)
   if(SvROK(sv))
     type = "RV";
 
-  PerlIO_printf(Perl_debug_log, "SV{type=%s,refcnt=%d", type, SvREFCNT(sv));
+  PerlIO_printf(Perl_debug_log, "SV{type=%s,refcnt=%" IVdf, type, (IV) SvREFCNT(sv));
 
   if(SvTEMP(sv))
     PerlIO_printf(Perl_debug_log, ",TEMP");
@@ -62,7 +62,7 @@ static inline void S_debug_sv_summary(pTHX_ const SV *sv)
 
   switch(SvTYPE(sv)) {
     case SVt_PVAV:
-      PerlIO_printf(Perl_debug_log, ",FILL=%ld", AvFILL((AV *)sv));
+      PerlIO_printf(Perl_debug_log, ",FILL=%d", AvFILL((AV *)sv));
       break;
 
     default:
@@ -104,9 +104,9 @@ static inline void S_debug_showstack(pTHX_ const char *pattern, ...)
   I32 floor = cx->blk_oldsp;
   I32 *mark = PL_markstack + cx->blk_oldmarksp + 1;
 
-  PerlIO_printf(Perl_debug_log, "  marks (TOPMARK=@%d):\n", TOPMARK - floor);
+  PerlIO_printf(Perl_debug_log, "  marks (TOPMARK=@%" IVdf "):\n", (IV) (TOPMARK - floor));
   for(; mark <= PL_markstack_ptr; mark++)
-    PerlIO_printf(Perl_debug_log,  "    @%d\n", *mark - floor);
+    PerlIO_printf(Perl_debug_log,  "    @%" IVdf "\n", (IV) (*mark - floor));
 
   mark = PL_markstack + cx->blk_oldmarksp + 1;
   for(sp = PL_stack_base + floor + 1; sp <= PL_stack_sp; sp++) {
