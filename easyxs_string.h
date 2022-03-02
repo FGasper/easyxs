@@ -3,9 +3,6 @@
 
 #include "init.h"
 
-#define _EASYXS_CROAK_STRINGIFY_REFERENCE(sv) \
-    croak("%" SVf " given where string expected!", sv)
-
 inline char* _easyxs_sv_to_str (pTHX_ SV* sv, uint8_t is_utf8) {
     if (SvROK(sv)) _EASYXS_CROAK_STRINGIFY_REFERENCE(sv);
 
