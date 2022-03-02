@@ -62,7 +62,7 @@ static inline void S_debug_sv_summary(pTHX_ const SV *sv)
 
   switch(SvTYPE(sv)) {
     case SVt_PVAV:
-      PerlIO_printf(Perl_debug_log, ",FILL=%d", AvFILL((AV *)sv));
+      PerlIO_printf(Perl_debug_log, ",FILL=%d", (int) AvFILL((AV *)sv));
       break;
 
     default:
