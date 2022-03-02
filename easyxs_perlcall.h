@@ -4,6 +4,8 @@
 #include "init.h"
 
 static inline void _EASYXS_SET_ARGS (pTHX_ SV* object, SV** args) {
+    dSP;
+
     unsigned argscount = 0;
 
     if (args) {
@@ -28,9 +30,7 @@ static inline void _EASYXS_SET_ARGS (pTHX_ SV* object, SV** args) {
 }
 
 #define exs_call_method_void(object, methname, args) STMT_START { \
-    dSP;                                            \
-                                                    \
-    _EASYXS_SET_ARGS(object, args);                 \
+    _EASYXS_SET_ARGS(aTHX_ object, args);                 \
                                                     \
     call_method( methname, G_DISCARD | G_VOID );    \
                                                     \
@@ -38,12 +38,14 @@ static inline void _EASYXS_SET_ARGS (pTHX_ SV* object, SV** args) {
     LEAVE;                                          \
 } STMT_END
 
-static inline SV* _easyxs_call_method_scalar (pTHX_ SV* object, SV** args) {
+static inline SV* _easyxs_call_method_scalar (pTHX_ SV* object, const char* methname, SV** args) {
     dSP;
 
-    _EASYXS_SET_ARGS(object, args);
+    _EASYXS_SET_ARGS(aTHX_ object, args);
 
     int count = call_method( methname, G_SCALAR );
+
+    SPAGAIN;
 
     SV* ret;
 
@@ -52,8 +54,11 @@ static inline SV* _easyxs_call_method_scalar (pTHX_ SV* object, SV** args) {
     }
     else {
         ret = SvREFCNT_inc(POPs);
+
+        while (count-- > 1) POPs;
     }
 
+    PUTBACK;
     FREETMPS;
     LEAVE;
 
