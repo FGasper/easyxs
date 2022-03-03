@@ -30,8 +30,8 @@ and safe (or, at least, safe-_er_!) to write XS code … maybe even *fun!* :-)
 `init.h` includes the standard boilerplate code you normally stick at the
 top of a `*.xs` file. It also includes a fix for the
 [torrent of warnings that clang 12 throws](https://github.com/Perl/perl5/issues/18780)
-in pre-5.36 perls. `easyxs.h` brings this in, but you can also include it
-on its own.
+in pre-5.36 perls. `easyxs.h` brings this in, but you can also
+`#include "easyxs/init.h"` on its own.
 
 `init.h` also includes a fairly up-to-date `ppport.h`.
 
@@ -58,10 +58,49 @@ just have zero net effect.)
 Like `exs_call_method_void()` but calls the method in scalar context.
 The result is returned.
 
+## SV/Number Conversion
+
+### `UV* exs_SvUV(SV* sv)`
+
+Like `SvUV`, but if the SV’s content can’t be an unsigned integer
+(e.g., the IV is negative, or the string has non-numeric characters)
+an exception is thrown.
+
+## SV/String Conversion
+
+### `char* exs_SvPVbyte_nolen(SV* sv)`
+
+Like the Perl API’s `SvPVbyte_nolen`, but if there are any NULs in the
+PV then an exception is thrown.
+
+### `char* exs_SvPVutf8_nolen(SV* sv)`
+
+Like `exs_SvPVbyte_nolen()` but returns the code points as UTF-8 rather
+than Latin-1/bytes.
+
+## Debugging
+
+### `exs_debug_sv_summary(SV* sv)`
+
+Writes a visual representation of the SV’s contents to `Perl_debug_log`.
+**NO** trailing newline is written.
+
+### `exs_debug_showstack(const char *pattern, ...)`
+
+Writes a visual representation of Perl’s argument stack
+to `Perl_debug_log`.
+
 # Usage Notes
 
-If you use GitHub Actions or similar, ensure that you
-`git submodule init && git submodule update` as part of your checkout.
+If you use GitHub Actions or similar, ensure that you grab the submodule
+as part of your workflow’s checkout. If you use GitHub’s own
+[checkout](https://github.com/actions/checkout) workflow, that’s:
+
+    - with:
+        submodules: true  # (or `recursive`)
+
+Alternatively, run `git submodule init && git submodule update`
+during the workflow’s repository setup.
 
 # License & Copyright
 
