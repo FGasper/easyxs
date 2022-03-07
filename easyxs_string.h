@@ -3,7 +3,7 @@
 
 #include "init.h"
 
-inline char* _easyxs_sv_to_str (pTHX_ SV* sv, U8 is_utf8) {
+static inline char* _easyxs_sv_to_str (pTHX_ SV* sv, U8 is_utf8) {
     if (SvROK(sv)) _EASYXS_CROAK_STRINGIFY_REFERENCE(sv);
 
     char *str = is_utf8 ? SvPVutf8_nolen(sv) : SvPVbyte_nolen(sv);
