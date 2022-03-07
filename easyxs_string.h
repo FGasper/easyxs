@@ -18,7 +18,7 @@ inline char* _easyxs_sv_to_str (pTHX_ SV* sv, U8 is_utf8) {
 
 /* ---------------------------------------------------------------------- */
 
-#define exs_SvPVbyte_nolen(sv) _easyxs_sv_to_str(aTHX_ sv, 0);
-#define exs_SvPVutf8_nolen(sv) _easyxs_sv_to_str(aTHX_ sv, 1);
+#define exs_SvPVbyte_nolen(sv) _easyxs_sv_to_str(aTHX_ sv, 0)
+#define exs_SvPVutf8_nolen(sv) _easyxs_sv_to_str(aTHX_ sv, 1)
 
 #endif
