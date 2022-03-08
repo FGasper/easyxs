@@ -1,7 +1,7 @@
 # Easy XS
 
 This library is a toolbox that assists with creation & maintenance
-of Perl XS code.
+of [Perl XS](https://perldoc.perl.org/perlxs) code.
 
 # Usage
 
@@ -33,20 +33,24 @@ top of a `*.xs` file. It also includes a fix for the
 in pre-5.36 perls. `easyxs.h` brings this in, but you can also
 `#include "easyxs/init.h"` on its own.
 
-`init.h` also includes a fairly up-to-date `ppport.h`.
+`init.h` also includes a fairly up-to-date (as of this writing!) `ppport.h`.
 
 ## Calling Perl
 
 ### `void exs_call_sv_void(SV* callback, SV** args)`
 
-Like the Perl API’s `call_sv()` but handles argument-passing for you.
-`args` points to a NULL-terminated array of `SV*`s. (It may also be NULL.)
+Like the Perl API’s `call_sv()` but simplifies argument-passing.
+`args` points to a NULL-terminated array of `SV*`s.
+(It may itself also be NULL.)
 
-The method is called in void context, so nothing is returned.
+The callback is called in void context, so nothing is returned.
 
-This does _not_ trap exceptions.
+**IMPORTANT CAVEATS:**
 
-**IMPORTANT:** This **mortalizes** each `args` member. That means Perl
+- This does _not_ trap exceptions. Ensure either that the callback won’t
+throw, or that no corruption will happen in the event of an exception.
+
+- This **mortalizes** each `args` member. That means Perl
 will reduce each of those SVs’ reference counts at some point “soon” after.
 This is often desirable, but not always; to counteract it, do `SvREFCNT_inc()`
 around whichever arguments you want to be unaffected by the mortalization.
@@ -67,7 +71,7 @@ The result is returned.
 
 ### `UV* exs_SvUV(SV* sv)`
 
-Like `SvUV`, but if the SV’s content can’t be an unsigned integer
+Like `SvUV`, but if the SV’s content can’t be a UV
 (e.g., the IV is negative, or the string has non-numeric characters)
 an exception is thrown.
 
@@ -76,7 +80,7 @@ an exception is thrown.
 ### `char* exs_SvPVbyte_nolen(SV* sv)`
 
 Like the Perl API’s `SvPVbyte_nolen`, but if there are any NULs in the
-PV then an exception is thrown.
+string then an exception is thrown.
 
 ### `char* exs_SvPVutf8_nolen(SV* sv)`
 
