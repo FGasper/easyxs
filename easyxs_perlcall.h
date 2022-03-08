@@ -29,6 +29,13 @@ static inline void _EASYXS_SET_ARGS (pTHX_ SV* object, SV** args) {
     }
 }
 
+#define exs_call_sv_void(sv, args) STMT_START { \
+    _EASYXS_SET_ARGS(aTHX_ NULL, args);         \
+    call_sv(sv, G_DISCARD | G_VOID);            \
+    FREETMPS;                                   \
+    LEAVE;                                      \
+} STMT_END
+
 #define exs_call_method_void(object, methname, args) STMT_START { \
     _EASYXS_SET_ARGS(aTHX_ object, args);                 \
                                                     \

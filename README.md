@@ -37,9 +37,9 @@ in pre-5.36 perls. `easyxs.h` brings this in, but you can also
 
 ## Calling Perl
 
-### `void exs_call_method_void(SV* object, const char* methname, SV** args)`
+### `void exs_call_sv_void(SV* callback, SV** args)`
 
-Like the Perl API’s `call_method()` but handles argument-passing for you.
+Like the Perl API’s `call_sv()` but handles argument-passing for you.
 `args` points to a NULL-terminated array of `SV*`s. (It may also be NULL.)
 
 The method is called in void context, so nothing is returned.
@@ -52,6 +52,11 @@ This is often desirable, but not always; to counteract it, do `SvREFCNT_inc()`
 around whichever arguments you want to be unaffected by the mortalization.
 (They’ll still be mortalized, but the eventual reference-count reduction will
 just have zero net effect.)
+
+### `void exs_call_method_void(SV* object, const char* methname, SV** args)`
+
+Like `exs_call_sv_void()` but for calling object methods. See
+the Perl API’s `call_method()` for more details.
 
 ### `SV* exs_call_method_scalar(SV* object, const char* methname, SV** args)`
 
