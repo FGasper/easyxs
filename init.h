@@ -1,6 +1,10 @@
 #ifndef EASYXS_INIT
 #define EASYXS_INIT 1
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define PERL_NO_GET_CONTEXT
 #include "EXTERN.h"
 
@@ -12,6 +16,10 @@
 #include "XSUB.h"
 
 #include "ppport.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 /* Implement perl5 415da10787d8fa51 for older perls (part 2): */
 #undef STMT_START
