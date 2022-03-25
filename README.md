@@ -1,4 +1,4 @@
-# Easy XS
+# EasyXS
 
 This library is a toolbox that assists with creation & maintenance
 of [Perl XS](https://perldoc.perl.org/perlxs) code.
@@ -86,6 +86,28 @@ string then an exception is thrown.
 
 Like `exs_SvPVbyte_nolen()` but returns the code points as UTF-8 rather
 than Latin-1/bytes.
+
+## Struct References
+
+It’s common in XS code to need to persist a C struct via a Perl variable,
+then free that struct once the Perl variable is garbage-collected. Perl’s
+`sv_setref_pv` and similar APIs present one way to do this: store a pointer
+to the struct in an SV, then pass around a blessed (Perl) reference to that
+SV, freeing the struct when the referent SV gets DESTROYed.
+
+EasyXS’s “struct references” are a slight simplification of this workflow:
+use the referent SV’s PV to store the struct itself. Thus, Perl cleans up
+the struct for you, and there’s no need for a DESTROY to free your struct.
+(You may, of course, still need a DESTROY to free blocks to which your
+struct refers.)
+
+### `exs_new_structref(type, classname)`
+
+Creates a new structref for the given (C) `type` and (Perl) `classname`.
+
+### `exs_structref_ptr(svrv)`
+
+Returns a pointer to `svrv`’s contained struct.
 
 ## Debugging
 

@@ -12,6 +12,7 @@
 #include "easyxs_perlcall.h"
 #include "easyxs_numeric.h"
 #include "easyxs_string.h"
+#include "easyxs_structref.h"
 #include "easyxs_debug.h"
 
 #endif
