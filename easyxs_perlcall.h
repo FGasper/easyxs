@@ -45,12 +45,8 @@ static inline void _EASYXS_SET_ARGS (pTHX_ SV* object, SV** args) {
     LEAVE;                                          \
 } STMT_END
 
-static inline SV* _easyxs_call_method_scalar (pTHX_ SV* object, const char* methname, SV** args) {
+static inline SV* _easyxs_fetch_scalar_return (pTHX_ int count) {
     dSP;
-
-    _EASYXS_SET_ARGS(aTHX_ object, args);
-
-    int count = call_method( methname, G_SCALAR );
 
     SPAGAIN;
 
@@ -72,7 +68,26 @@ static inline SV* _easyxs_call_method_scalar (pTHX_ SV* object, const char* meth
     return ret;
 }
 
+static inline SV* _easyxs_call_method_scalar (pTHX_ SV* object, const char* methname, SV** args) {
+    _EASYXS_SET_ARGS(aTHX_ object, args);
+
+    int count = call_method(methname, G_SCALAR);
+
+    return _easyxs_fetch_scalar_return(aTHX_ count);
+}
+
 #define exs_call_method_scalar(object, methname, args) \
     _easyxs_call_method_scalar(aTHX_ object, methname, args)
+
+static inline SV* _easyxs_call_sv_scalar (pTHX_ SV* cb, SV** args) {
+    _EASYXS_SET_ARGS(aTHX_ NULL, args);
+
+    int count = call_sv(cb, G_SCALAR);
+
+    return _easyxs_fetch_scalar_return(aTHX_ count);
+}
+
+#define exs_call_sv_scalar(sv, args) \
+    _easyxs_call_sv_scalar(aTHX_ sv, args)
 
 #endif

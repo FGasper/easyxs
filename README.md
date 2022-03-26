@@ -57,6 +57,11 @@ around whichever arguments you want to be unaffected by the mortalization.
 (They’ll still be mortalized, but the eventual reference-count reduction will
 just have zero net effect.)
 
+### `SV* exs_call_sv_scalar(SV* callback, SV** args)`
+
+Like `exs_call_sv_void()` but calls the callback in scalar context.
+The result is returned.
+
 ### `void exs_call_method_void(SV* object, const char* methname, SV** args)`
 
 Like `exs_call_sv_void()` but for calling object methods. See
