@@ -99,7 +99,7 @@ static inline SV* _easyxs_call_sv_scalar_trapped (pTHX_ SV* cb, SV** args, SV** 
 
     SV* err_tmp = ERRSV;
     if (SvTRUE(err_tmp)) {
-        while (count--) POPs;
+        while (count--) PERL_UNUSED_VAR(POPs);
 
         *error = err_tmp;
 
