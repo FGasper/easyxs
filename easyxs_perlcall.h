@@ -90,4 +90,30 @@ static inline SV* _easyxs_call_sv_scalar (pTHX_ SV* cb, SV** args) {
 #define exs_call_sv_scalar(sv, args) \
     _easyxs_call_sv_scalar(aTHX_ sv, args)
 
+static inline SV* _easyxs_call_sv_scalar_trapped (pTHX_ SV* cb, SV** args, SV** error) {
+    _EASYXS_SET_ARGS(aTHX_ NULL, args);
+
+    int count = call_sv(cb, G_SCALAR | G_EVAL);
+
+    dSP;
+
+    SV* err_tmp = ERRSV;
+    if (SvTRUE(err_tmp)) {
+        while (count--) POPs;
+
+        *error = err_tmp;
+
+        PUTBACK;
+        FREETMPS;
+        LEAVE;
+
+        return NULL;
+    }
+
+    return _easyxs_fetch_scalar_return(aTHX_ count);
+}
+
+#define exs_call_sv_scalar_trapped(sv, args, err_p) \
+    _easyxs_call_sv_scalar_trapped(aTHX_ sv, args, err_p)
+
 #endif

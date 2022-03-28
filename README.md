@@ -62,6 +62,11 @@ just have zero net effect.)
 Like `exs_call_sv_void()` but calls the callback in scalar context.
 The result is returned.
 
+### `SV* exs_call_sv_scalar_trapped(SV* callback, SV** args, SV** error_svp)`
+
+Like `exs_call_sv_scalar()` but traps exceptions. If one happens,
+NULL is returned, and `*error_svp` will contain the error SV.
+
 ### `void exs_call_method_void(SV* object, const char* methname, SV** args)`
 
 Like `exs_call_sv_void()` but for calling object methods. See
