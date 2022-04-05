@@ -75,18 +75,13 @@ static inline SV** _easyxs_fetch_list_return (pTHX_ int count) {
 
     SV** ret;
 
-    if (count == 0) {
-        ret = NULL;
-    }
-    else {
-        Newx(ret, 1 + count, SV*);
-        ret[count] = NULL;
+    Newx(ret, 1 + count, SV*);
+    ret[count] = NULL;
 
-        SAVEFREEPV(ret);
+    SAVEFREEPV(ret);
 
-        while (count-- > 0) {
-            ret[count] = SvREFCNT_inc(POPs);
-        }
+    while (count-- > 0) {
+        ret[count] = SvREFCNT_inc(POPs);
     }
 
     PUTBACK;
@@ -129,30 +124,46 @@ static inline SV** _easyxs_call_sv_list (pTHX_ SV* cb, SV** args) {
 #define exs_call_sv_list(sv, args) \
     _easyxs_call_sv_list(aTHX_ sv, args)
 
+#define _handle_trapped_error(count) STMT_START { \
+    dSP;                                        \
+    SV* err_tmp = ERRSV;                        \
+    if (SvTRUE(err_tmp)) {                      \
+        while (count--) PERL_UNUSED_VAR(POPs);  \
+                                                \
+        *error = err_tmp;                       \
+                                                \
+        PUTBACK;                                \
+        FREETMPS;                               \
+        LEAVE;                                  \
+                                                \
+        return NULL;                            \
+    }                                           \
+} STMT_END
+
 static inline SV* _easyxs_call_sv_scalar_trapped (pTHX_ SV* cb, SV** args, SV** error) {
     _EASYXS_SET_ARGS(aTHX_ NULL, args);
 
     int count = call_sv(cb, G_SCALAR | G_EVAL);
 
-    dSP;
-
-    SV* err_tmp = ERRSV;
-    if (SvTRUE(err_tmp)) {
-        while (count--) PERL_UNUSED_VAR(POPs);
-
-        *error = err_tmp;
-
-        PUTBACK;
-        FREETMPS;
-        LEAVE;
-
-        return NULL;
-    }
+    _handle_trapped_error(count);
 
     return _easyxs_fetch_scalar_return(aTHX_ count);
 }
 
 #define exs_call_sv_scalar_trapped(sv, args, err_p) \
     _easyxs_call_sv_scalar_trapped(aTHX_ sv, args, err_p)
+
+static inline SV** _easyxs_call_sv_list_trapped (pTHX_ SV* cb, SV** args, SV** error) {
+    _EASYXS_SET_ARGS(aTHX_ NULL, args);
+
+    int count = call_sv(cb, G_ARRAY | G_EVAL);
+
+    _handle_trapped_error(count);
+
+    return _easyxs_fetch_list_return(aTHX_ count);
+}
+
+#define exs_call_sv_list_trapped(sv, args, err_p) \
+    _easyxs_call_sv_list_trapped(aTHX_ sv, args, err_p)
 
 #endif

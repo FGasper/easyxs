@@ -81,13 +81,15 @@ The result is returned.
 
 Like `exs_call_sv_scalar` but calls the callback in list context.
 
-The return is one of:
+The return is a pointer to a NUL-terminated array of `SV*`s. The pointer will
+be freed automatically, but the SVs are non-mortals with reference count 1,
+so you’ll need to dispose of those however is best for you.
 
-- NULL, if the callback returned 0 results
+### `SV** exs_call_sv_list_trapped(SV* callback, SV** args, SV** error_svp)`
 
-- A pointer to a NUL-terminated array of `SV*`s. The pointer will be freed
-automatically, but the SVs are non-mortals with reference count 1, so you’ll
-need to dispose of those however is best for you.
+Like both `exs_call_sv_list` and `exs_call_sv_scalar_trapped`. If the
+callback throws, this behaves as `exs_call_sv_scalar_trapped` does;
+otherwise, this behaves as `exs_call_sv_list` does.
 
 ## SV “Typing”
 
