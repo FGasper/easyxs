@@ -77,6 +77,18 @@ the Perl API’s `call_method()` for more details.
 Like `exs_call_method_void()` but calls the method in scalar context.
 The result is returned.
 
+### `SV** exs_call_sv_list(SV* callback, SV** args)`
+
+Like `exs_call_sv_scalar` but calls the callback in list context.
+
+The return is one of:
+
+- NULL, if the callback returned 0 results
+
+- A pointer to a NUL-terminated array of `SV*`s. The pointer will be freed
+automatically, but the SVs are non-mortals with reference count 1, so you’ll
+need to dispose of those however is best for you.
+
 ## SV “Typing”
 
 Perl scalars are supposed to be “untyped”, at least insofar as

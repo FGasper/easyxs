@@ -68,6 +68,34 @@ static inline SV* _easyxs_fetch_scalar_return (pTHX_ int count) {
     return ret;
 }
 
+static inline SV** _easyxs_fetch_list_return (pTHX_ int count) {
+    dSP;
+
+    SPAGAIN;
+
+    SV** ret;
+
+    if (count == 0) {
+        ret = NULL;
+    }
+    else {
+        Newx(ret, 1 + count, SV*);
+        ret[count] = NULL;
+
+        SAVEFREEPV(ret);
+
+        while (count-- > 0) {
+            ret[count] = SvREFCNT_inc(POPs);
+        }
+    }
+
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+
+    return ret;
+}
+
 static inline SV* _easyxs_call_method_scalar (pTHX_ SV* object, const char* methname, SV** args) {
     _EASYXS_SET_ARGS(aTHX_ object, args);
 
@@ -89,6 +117,17 @@ static inline SV* _easyxs_call_sv_scalar (pTHX_ SV* cb, SV** args) {
 
 #define exs_call_sv_scalar(sv, args) \
     _easyxs_call_sv_scalar(aTHX_ sv, args)
+
+static inline SV** _easyxs_call_sv_list (pTHX_ SV* cb, SV** args) {
+    _EASYXS_SET_ARGS(aTHX_ NULL, args);
+
+    int count = call_sv(cb, G_ARRAY);
+
+    return _easyxs_fetch_list_return(aTHX_ count);
+}
+
+#define exs_call_sv_list(sv, args) \
+    _easyxs_call_sv_list(aTHX_ sv, args)
 
 static inline SV* _easyxs_call_sv_scalar_trapped (pTHX_ SV* cb, SV** args, SV** error) {
     _EASYXS_SET_ARGS(aTHX_ NULL, args);
