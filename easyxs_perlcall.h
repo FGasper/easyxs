@@ -78,8 +78,6 @@ static inline SV** _easyxs_fetch_list_return (pTHX_ int count) {
     Newx(ret, 1 + count, SV*);
     ret[count] = NULL;
 
-    SAVEFREEPV(ret);
-
     while (count-- > 0) {
         ret[count] = SvREFCNT_inc(POPs);
     }
