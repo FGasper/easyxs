@@ -81,9 +81,9 @@ The result is returned.
 
 Like `exs_call_sv_scalar` but calls the callback in list context.
 
-The return is a pointer to a NUL-terminated array of `SV*`s. The freeing of
-that pointer **and** of the SVs (non-mortals with reference count 1) is
-_your_ responsibility.
+The return is a pointer to a NUL-terminated array of `SV*`s. The pointer will
+be freed automatically, but the SVs are non-mortals with reference count 1,
+so you’ll need to dispose of those however is best for you.
 
 ### `SV** exs_call_sv_list_trapped(SV* callback, SV** args, SV** error_svp)`
 
