@@ -124,28 +124,39 @@ static inline SV** _easyxs_call_sv_list (pTHX_ SV* cb, SV** args) {
 #define exs_call_sv_list(sv, args) \
     _easyxs_call_sv_list(aTHX_ sv, args)
 
-#define _handle_trapped_error(count) STMT_START { \
+#define _handle_trapped_error(count, err_p) STMT_START { \
     dSP;                                        \
     SV* err_tmp = ERRSV;                        \
     if (SvTRUE(err_tmp)) {                      \
         while (count--) PERL_UNUSED_VAR(POPs);  \
                                                 \
-        *error = err_tmp;                       \
+        *err_p = err_tmp;                       \
                                                 \
         PUTBACK;                                \
         FREETMPS;                               \
         LEAVE;                                  \
-                                                \
-        return NULL;                            \
     }                                           \
 } STMT_END
+
+static inline void _easyxs_call_sv_void_trapped (pTHX_ SV* cb, SV** args, SV** error) {
+    _EASYXS_SET_ARGS(aTHX_ NULL, args);
+
+    int count = call_sv(cb, G_VOID | G_EVAL);
+
+    _handle_trapped_error(count, error);
+}
+
+#define exs_call_sv_void_trapped(sv, args, err_p) \
+    _easyxs_call_sv_void_trapped(aTHX_ sv, args, err_p)
 
 static inline SV* _easyxs_call_sv_scalar_trapped (pTHX_ SV* cb, SV** args, SV** error) {
     _EASYXS_SET_ARGS(aTHX_ NULL, args);
 
     int count = call_sv(cb, G_SCALAR | G_EVAL);
 
-    _handle_trapped_error(count);
+    _handle_trapped_error(count, error);
+
+    if (SvTRUE(ERRSV)) return NULL;
 
     return _easyxs_fetch_scalar_return(aTHX_ count);
 }
@@ -158,7 +169,9 @@ static inline SV** _easyxs_call_sv_list_trapped (pTHX_ SV* cb, SV** args, SV** e
 
     int count = call_sv(cb, G_ARRAY | G_EVAL);
 
-    _handle_trapped_error(count);
+    _handle_trapped_error(count, error);
+
+    if (SvTRUE(ERRSV)) return NULL;
 
     return _easyxs_fetch_list_return(aTHX_ count);
 }
