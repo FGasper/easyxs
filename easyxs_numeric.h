@@ -45,12 +45,12 @@ UV _easyxs_SvIV (pTHX_ SV* sv) {
     const char* pv = SvPVbyte(sv, pvlen);
 
     IV myiv;
-    int grokked = grok_number(pv, pvlen, &myiv);
+    int grokked = grok_number(pv, pvlen, (UV*) &myiv);
 
     if (!(grokked & IS_NUMBER_NOT_INT) && !(grokked & IS_NUMBER_IN_UV)) {
         const char* ivstr = form("%" IVdf, myiv);
 
-        if (strlen(ivstr) == pvlen && strEQ(uvstr, pv)) return myiv;
+        if (strlen(ivstr) == pvlen && strEQ(ivstr, pv)) return myiv;
     }
 
     croak("`%" SVf "` given where integer expected!", sv);
